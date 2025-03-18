@@ -27,12 +27,14 @@ ALTER TABLE "user_accesses_access" ADD CONSTRAINT "FK_2e73445e27ba4a120d52cc6a8a
 \connect storage;
 
 -- Create tables
+CREATE TABLE "user" ("id" SERIAL NOT NULL, "email" character varying NOT NULL, "full_name" character varying, CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"));
 CREATE TABLE "private_file" ("id" SERIAL NOT NULL, "object_name" character varying, "bucket_name" character varying, "url" character varying NOT NULL, "description" character varying, "user_id" integer NOT NULL, CONSTRAINT "PK_6ef35c8eae2d9df2959ef4227de" PRIMARY KEY ("id"));
 
 -- Connect to the 'store' database and create tables
 \connect store;
 
 -- Create tables
+CREATE TABLE "user" ("id" SERIAL NOT NULL, "email" character varying NOT NULL, "full_name" character varying, CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"));
 CREATE TYPE "public"."payment_payment_status_enum" AS ENUM('pending', 'failed', 'paid');
 CREATE TABLE "payment" ("id" SERIAL NOT NULL, "user_id" integer NOT NULL, "amount" numeric(10,2) NOT NULL DEFAULT '0', "paid_date" TIMESTAMP, "payment_status" "public"."payment_payment_status_enum" NOT NULL DEFAULT 'pending', "order_id" integer NOT NULL, "description" character varying(255) NOT NULL, CONSTRAINT "PK_fcaec7df5adf9cac408c686b2ab" PRIMARY KEY ("id"));
 CREATE TYPE "public"."order_order_status_enum" AS ENUM('pending', 'paid', 'processing', 'completed', 'cancelled');
@@ -105,3 +107,11 @@ VALUES
     ('Product 1', 'Description 1', 'http://www.localhost/image/6', 1, 93, 89, true),
     ('Product 2', 'Description 2', 'http://www.localhost/image/7', 1, 112, 99, false),
     ('Product 3', 'Description 3', 'http://www.localhost/image/7', 2, 40, 39, true);
+
+-- Insert data into the 'user' table
+INSERT INTO "user" (email, full_name) 
+VALUES 
+    ('admin@example.com', 'Michael Smith'),     -- 1
+    ('internal@example.com', 'Isabella Moore'), -- 2
+    ('user1@example.com', 'Sophia Taylor'),     -- 3
+    ('user2@example.com', 'Alexander Johnson'); -- 4

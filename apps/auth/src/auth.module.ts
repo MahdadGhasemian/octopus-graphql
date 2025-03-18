@@ -20,10 +20,21 @@ import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-yet';
 import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
-import { GqlModuleOptions, GraphQLModule } from '@nestjs/graphql';
+import { GqlModuleOptions, GraphQLModule, Int } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthResolver } from './auth.resolver';
 import { AuthController } from './auth.controller';
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
+import {
+  DirectiveLocation,
+  GraphQLBoolean,
+  GraphQLDirective,
+  GraphQLEnumType,
+} from 'graphql';
+import Keyv from 'keyv';
+import KeyvRedis from '@keyv/redis';
+import { KeyvAdapter } from '@apollo/utils.keyvadapter';
 
 @Module({
   imports: [
@@ -80,6 +91,16 @@ import { AuthController } from './auth.controller';
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: async (configService: ConfigService) => {
+        const redisUri = `redis://${configService.get<string>('REDIS_HOST')}:${configService.get<number>('REDIS_PORT')}`;
+
+        // Create a Keyv instance with Redis
+        const keyvInstance = new Keyv({
+          store: new KeyvRedis(redisUri),
+        });
+
+        // Wrap Keyv with KeyvAdapter for Apollo compatibility
+        const keyvCache = new KeyvAdapter(keyvInstance);
+
         return {
           autoSchemaFile: configService.get<string>(
             'GRAPHQL_SCHEMA_FILE_AUTH',
@@ -91,6 +112,54 @@ import { AuthController } from './auth.controller';
             origin: true,
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
             credentials: true,
+          },
+          plugins: [
+            ApolloServerPluginCacheControl(),
+            // ApolloServerPluginCacheControl({ defaultMaxAge: 100 }),
+            responseCachePlugin({
+              cache: keyvCache,
+              sessionId: async (requestContext) => {
+                const req = requestContext.request.http;
+                if (!req) return null;
+
+                const cookies = req.headers.get('cookie') || '';
+                const cookieAuth = cookies
+                  .split('; ')
+                  .find((c) => c.startsWith('Authentication='))
+                  ?.split('=')[1];
+
+                const headerAuth = req.headers.get('Authentication');
+
+                return cookieAuth || headerAuth || null;
+              },
+            }),
+          ],
+          buildSchemaOptions: {
+            directives: [
+              new GraphQLDirective({
+                name: 'cacheControl',
+                args: {
+                  maxAge: { type: Int },
+                  scope: {
+                    type: new GraphQLEnumType({
+                      name: 'CacheControlScope',
+                      values: {
+                        PUBLIC: {},
+                        PRIVATE: {},
+                      },
+                    }),
+                  },
+                  inheritMaxAge: { type: GraphQLBoolean },
+                },
+                locations: [
+                  DirectiveLocation.FIELD_DEFINITION,
+                  DirectiveLocation.OBJECT,
+                  DirectiveLocation.INTERFACE,
+                  DirectiveLocation.UNION,
+                  DirectiveLocation.QUERY,
+                ],
+              }),
+            ],
           },
         } as GqlModuleOptions;
       },

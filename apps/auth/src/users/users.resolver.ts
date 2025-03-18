@@ -13,6 +13,7 @@ import { JwtAccessGuard } from '../guards/jwt-access.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ListUserDto } from './dto/list-user.dto';
 import {
+  CacheControl,
   FoceToClearCache,
   PaginateGraph,
   PaginateQueryGraph,
@@ -35,6 +36,7 @@ export class UsersResolver {
 
   @Query(() => ListUserDto, { name: 'users' })
   @UseGuards(JwtAccessGuard)
+  @CacheControl({ maxAge: 100 })
   async findAll(
     @Args() _: PaginateQueryGraph,
     @PaginateGraph() { query, config },
@@ -44,6 +46,7 @@ export class UsersResolver {
 
   @Query(() => GetUserDto, { name: 'user' })
   @UseGuards(JwtAccessGuard)
+  @CacheControl({ maxAge: 100 })
   async findOne(@Args('id') id: string) {
     return this.usersService.findOne({ id: +id });
   }

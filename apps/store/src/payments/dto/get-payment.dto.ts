@@ -1,8 +1,9 @@
-import { AbstractGetDto, PaymentStatus } from '@app/common';
+import { AbstractGetDto, CacheControl, PaymentStatus } from '@app/common';
 import { GetOrderDto } from '../../orders/dto/get-order.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
+@CacheControl({ inheritMaxAge: true })
 export class GetPaymentDto extends AbstractGetDto {
   @Field()
   amount?: number;

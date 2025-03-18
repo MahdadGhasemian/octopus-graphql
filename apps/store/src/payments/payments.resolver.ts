@@ -6,14 +6,13 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { User } from '../libs';
-import { CurrentUser, JwtAuthAccessGuard, NoCache } from '@app/common';
+import { CurrentUser, JwtAuthAccessGuard } from '@app/common';
 import { PaymentsService } from './payments.service';
 import { UseGuards } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { GetPaymentDto } from './dto/get-payment.dto';
 import { GetOrderDto } from '../orders/dto/get-order.dto';
 
-@NoCache()
 @Resolver(() => GetPaymentDto)
 export class PaymetnsResolver {
   constructor(private readonly paymentsService: PaymentsService) {}

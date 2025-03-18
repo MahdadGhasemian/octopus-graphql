@@ -2,7 +2,7 @@ import { UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GetOtpDto } from './dto/get-otp.dto';
 import { ConfirmOtpDto } from './dto/confirm-otp.dto';
-import { CurrentUser, NoCache } from '@app/common';
+import { CacheControl, CurrentUser } from '@app/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { GetUserDto } from './users/dto/get-user.dto';
@@ -12,7 +12,6 @@ import { User } from './libs';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GetOtpResponseDto } from './dto/get-otp.response.dto';
 
-@NoCache()
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
@@ -61,6 +60,7 @@ export class AuthResolver {
 
   @Query(() => GetUserDto, { name: 'info' })
   @UseGuards(JwtAuthGuard)
+  @CacheControl({ maxAge: 100 })
   async getUser(@CurrentUser() user: User) {
     return user;
   }

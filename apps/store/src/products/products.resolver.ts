@@ -8,8 +8,8 @@ import {
 } from '@nestjs/graphql';
 import { ProductsService } from './products.service';
 import {
+  CacheControl,
   JwtAuthAccessGuard,
-  NoCache,
   PaginateGraph,
   PaginateQueryGraph,
 } from '@app/common';
@@ -22,7 +22,6 @@ import { GetProductDto } from './dto/get-product.dto';
 import { GetCategoryDto } from '../categories/dto/get-category.dto';
 
 @Resolver(() => GetProductDto)
-@NoCache()
 export class ProductsResolver {
   constructor(
     private readonly productsService: ProductsService,
@@ -36,11 +35,13 @@ export class ProductsResolver {
   }
 
   @Query(() => ListProductDto, { name: 'products' })
+  @CacheControl({ maxAge: 100 })
   findAll(@Args() _: PaginateQueryGraph, @PaginateGraph() { query, config }) {
     return this.productsService.findAll(query, config);
   }
 
   @Query(() => GetProductDto, { name: 'product' })
+  @CacheControl({ maxAge: 100 })
   async find(@Args('id') id: string) {
     return this.productsService.findOne({ id: +id });
   }
