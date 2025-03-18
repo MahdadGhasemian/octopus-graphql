@@ -85,7 +85,7 @@ mcli alias set octopus-graphql http://localhost:9100 admin randompassword
 
 ### Auth
 
-![User Access](.images/user-access.png)
+![User Access GraphQL](.images/user-access-graphql.png)
 
 - Support dynamic access (role)
 - Support auto Caching
@@ -108,7 +108,7 @@ mcli alias set octopus-graphql http://localhost:9100 admin randompassword
 
 ### Store
 
-![Store Product List](.images/store-product-list.png)
+![Store Product List](.images/store-product-list-graphql.png)
 
 - Support fully Pagination
 - Support auto Caching
