@@ -1,4 +1,4 @@
-name: octopus
+name: octopus_graphql
 
 services:
   auth:
@@ -139,19 +139,19 @@ services:
       /bin/sh -c "
       /opt/bitnami/scripts/minio/run.sh &
       sleep 10 &&
-      mc alias set octopus http://localhost:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD} &&
-      mc admin user add octopus ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY} &&
-      mc admin policy attach octopus readwrite --user=${MINIO_ACCESS_KEY} &&
-      mc mb --ignore-existing octopus/public-images &&
-      mc mb --ignore-existing octopus/public-documents &&
-      mc mb --ignore-existing octopus/public-media &&
-      mc mb --ignore-existing octopus/public-compressed &&
-      mc mb --ignore-existing octopus/private-images &&
-      mc mb --ignore-existing octopus/private-documents &&
-      mc mb --ignore-existing octopus/private-media &&
-      mc mb --ignore-existing octopus/private-compressed &&
-      mc mb --ignore-existing octopus/cache-images &&
-      mc mb --ignore-existing octopus/private-cache-images &&
+      mc alias set octopus_graphql http://localhost:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD} &&
+      mc admin user add octopus_graphql ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY} &&
+      mc admin policy attach octopus_graphql readwrite --user=${MINIO_ACCESS_KEY} &&
+      mc mb --ignore-existing octopus_graphql/public-images &&
+      mc mb --ignore-existing octopus_graphql/public-documents &&
+      mc mb --ignore-existing octopus_graphql/public-media &&
+      mc mb --ignore-existing octopus_graphql/public-compressed &&
+      mc mb --ignore-existing octopus_graphql/private-images &&
+      mc mb --ignore-existing octopus_graphql/private-documents &&
+      mc mb --ignore-existing octopus_graphql/private-media &&
+      mc mb --ignore-existing octopus_graphql/private-compressed &&
+      mc mb --ignore-existing octopus_graphql/cache-images &&
+      mc mb --ignore-existing octopus_graphql/private-cache-images &&
       tail -f /dev/null
       "
 
