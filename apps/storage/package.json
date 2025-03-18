@@ -1,0 +1,17 @@
+{
+  "name": "@octopus/storage",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "jimp": "^0.22.12",
+    "nestjs-minio-client": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jimp": "^0.2.28"
+  }
+}

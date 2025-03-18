@@ -1,0 +1,164 @@
+name: octopus
+
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile.dev
+      target: development
+    command: npm run start:dev auth
+    env_file:
+      - ./apps/auth/.env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+
+  store:
+    build:
+      context: .
+      dockerfile: ./apps/store/Dockerfile.dev
+      target: development
+    command: npm run start:dev store
+    env_file:
+      - ./apps/store/.env
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+
+  storage:
+    build:
+      context: .
+      dockerfile: ./apps/storage/Dockerfile.dev
+      target: development
+    command: npm run start:dev storage
+    env_file:
+      - ./apps/storage/.env
+    ports:
+      - '3002:3002'
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+      - minio
+
+  postgres:
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /data/postgres
+      POSTGRES_MULTIPLE_DATABASES: auth,storage,store
+    volumes:
+      - postgres_data:/data/postgres
+      - ./init-scripts:/docker-entrypoint-initdb.d # Mount seed data
+    ports:
+      - '5436:5432'
+    logging:
+      driver: none
+    # entrypoint: >
+    #   /bin/bash -c "
+    #   set -e;
+    #   docker-entrypoint.sh postgres &
+    #   sleep 5;
+    #   IFS=',' read -ra DBS <<< \"$$POSTGRES_MULTIPLE_DATABASES\";
+    #   for db in \"$${DBS[@]}\"; do
+    #     echo 'Creating database: ' $$db;
+    #     psql -U $$POSTGRES_USER -tc \"SELECT 1 FROM pg_database WHERE datname = '$$db'\" | grep -q 1 || psql -U $$POSTGRES_USER -c \"CREATE DATABASE $$db;\";
+    #   done;
+    #   wait
+    #   "
+
+  pgadmin4:
+    image: elestio/pgadmin
+    env_file:
+      - .env
+    environment:
+      PGADMIN_LISTEN_PORT: 8080
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - '8087:8080'
+    logging:
+      driver: none
+    attach: false
+    depends_on:
+      - postgres
+
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    ports:
+      - '15679:15672'
+    env_file:
+      - .env
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  redis:
+    image: bitnami/redis
+    ports:
+      - 6376:6379
+    volumes:
+      - redis_data:/data
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+
+  redis-insight:
+    image: redis/redisinsight
+    restart: always
+    ports:
+      - '5549:5540'
+    volumes:
+      - redis_insight_data:/data
+    depends_on:
+      - redis
+
+  minio:
+    image: bitnami/minio
+    ports:
+      - 9100:9000
+      - 9101:9001
+    env_file:
+      - .env
+    volumes:
+      - minio_data:/bitnami/minio/data
+    entrypoint: >
+      /bin/sh -c "
+      /opt/bitnami/scripts/minio/run.sh &
+      sleep 10 &&
+      mc alias set octopus http://localhost:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD} &&
+      mc admin user add octopus ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY} &&
+      mc admin policy attach octopus readwrite --user=${MINIO_ACCESS_KEY} &&
+      mc mb --ignore-existing octopus/public-images &&
+      mc mb --ignore-existing octopus/public-documents &&
+      mc mb --ignore-existing octopus/public-media &&
+      mc mb --ignore-existing octopus/public-compressed &&
+      mc mb --ignore-existing octopus/private-images &&
+      mc mb --ignore-existing octopus/private-documents &&
+      mc mb --ignore-existing octopus/private-media &&
+      mc mb --ignore-existing octopus/private-compressed &&
+      mc mb --ignore-existing octopus/cache-images &&
+      mc mb --ignore-existing octopus/private-cache-images &&
+      tail -f /dev/null
+      "
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  rabbitmq_data:
+  redis_data:
+  redis_insight_data:
+  minio_data:

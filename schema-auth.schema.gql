@@ -1,0 +1,180 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input ChangePasswordDto {
+  confirmation_code: Float!
+  hashed_code: String!
+  password: String!
+}
+
+input ConfirmOtpDto {
+  confirmation_code: Float!
+  email: String!
+  full_name: String!
+  hashed_code: String!
+  password: String!
+}
+
+input CreateAccessDto {
+  color: String!
+  endpoints: [CreateEndpointAccessDto!]!
+  has_full_access: Boolean!
+  image: String!
+  title: String!
+}
+
+input CreateEndpointAccessDto {
+  method: String!
+  path: String!
+  tag: String!
+}
+
+input CreateUserDto {
+  access_ids: [Int!]!
+  email: String!
+  full_name: String!
+  password: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input EditInfoDto {
+  full_name: String!
+}
+
+type GetAccessDto {
+  cannot_be_deleted: Boolean!
+  color: String!
+  created_at: DateTime!
+  endpoints: [GetEndpointDto!]!
+  has_full_access: Boolean!
+  id: Int!
+  image: String!
+  title: String!
+  updated_at: DateTime!
+}
+
+type GetEndpointDto {
+  created_at: DateTime!
+  id: Int!
+  method: String!
+  path: String!
+  tag: String!
+  updated_at: DateTime!
+}
+
+type GetHealthDto {
+  database: String!
+  dbResponseTime: String!
+  rabbitResponseTime: String!
+  rabbitmq: String!
+  redis: String!
+  redisResponseTime: String!
+  status: String!
+}
+
+input GetOtpDto {
+  email: String!
+}
+
+type GetOtpResponseDto {
+  hashed_code: String!
+}
+
+type GetUserDto {
+  accesses: [GetAccessDto!]!
+  created_at: DateTime!
+  email: String!
+  full_name: String!
+  id: Int!
+  updated_at: DateTime!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+type LinksType {
+  current: String!
+  first: String
+  last: String
+  next: String
+  previous: String
+}
+
+type ListAccessDto {
+  data: [GetAccessDto!]!
+  links: LinksType!
+  meta: MetaType!
+}
+
+type ListUserDto {
+  data: [GetUserDto!]!
+  links: LinksType!
+  meta: MetaType!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type MetaType {
+  currentPage: Int!
+  filter: JSONObject
+  itemsPerPage: Int!
+  search: String
+  searchBy: [String!]
+  select: [String!]
+  sortBy: JSONObject
+  totalItems: Int!
+  totalPages: Int!
+}
+
+type Mutation {
+  changePassowrd(changePasswordDto: ChangePasswordDto!): GetUserDto!
+  confirm(confirmOtpDto: ConfirmOtpDto!): GetUserDto!
+  createAccess(createAccessDto: CreateAccessDto!): GetAccessDto!
+  createUser(createUserDto: CreateUserDto!): GetUserDto!
+  deleteAccess(id: String!): GetAccessDto!
+  deleteUser(id: String!): GetUserDto!
+  info(editInfoDto: EditInfoDto!): GetUserDto!
+  login(loginDto: LoginDto!): GetUserDto!
+  logout: GetUserDto
+  otp(getOtpDto: GetOtpDto!): GetOtpResponseDto!
+  updateAccess(id: String!, updateAccessDto: UpdateAccessDto!): GetAccessDto!
+  updateUser(id: String!, updateUserDto: UpdateUserDto!): GetUserDto!
+  updateUserAccess(id: String!, updateUserAccessDto: UpdateUserAccessDto!): GetUserDto!
+}
+
+type Query {
+  access(id: String!): GetAccessDto!
+  accesses(filter: [String!], limit: Int = 10, page: Int = 1, relations: [String!], search: String, searchBy: [String!], sortBy: [String!]): ListAccessDto!
+  healthAuth: GetHealthDto!
+  info: GetUserDto!
+  user(id: String!): GetUserDto!
+  users(filter: [String!], limit: Int = 10, page: Int = 1, relations: [String!], search: String, searchBy: [String!], sortBy: [String!]): ListUserDto!
+}
+
+input UpdateAccessDto {
+  color: String
+  endpoints: [CreateEndpointAccessDto!]
+  has_full_access: String
+  image: String
+  title: String
+}
+
+input UpdateUserAccessDto {
+  access_ids: [Int!]!
+}
+
+input UpdateUserDto {
+  access_ids: [Int!]
+  email: String
+  full_name: String
+}

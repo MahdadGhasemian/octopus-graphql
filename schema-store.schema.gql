@@ -1,0 +1,208 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateCategoryDto {
+  description: String!
+  image: String!
+  name: String!
+}
+
+input CreateOrderDto {
+  note: String
+  order_date: DateTime!
+  order_items: [CreateOrderItemDto!]!
+}
+
+input CreateOrderItemDto {
+  product_id: Int!
+  quantity: Int!
+}
+
+input CreatePaymentDto {
+  description: String
+  order_id: Int!
+}
+
+input CreateProductDto {
+  category_id: Int!
+  description: String!
+  image: String!
+  is_active: Boolean!
+  name: String!
+  price: Float!
+  sale_price: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type GetCategoryDto {
+  created_at: DateTime!
+  description: String!
+  id: Int!
+  image: String!
+  name: String!
+  products: [GetProductDto!]
+  updated_at: DateTime!
+}
+
+type GetHealthDto {
+  database: String!
+  dbResponseTime: String!
+  rabbitResponseTime: String!
+  rabbitmq: String!
+  redis: String!
+  redisResponseTime: String!
+  status: String!
+}
+
+type GetOrderDto {
+  created_at: DateTime!
+  id: Int!
+  is_paid: Boolean!
+  note: String!
+  order_date: DateTime!
+  order_items: [GetOrderItemDto!]!
+  order_status: OrderStatus!
+  total_bill_amount: Float!
+  updated_at: DateTime!
+}
+
+type GetOrderItemDto {
+  created_at: DateTime!
+  id: Int!
+  product: GetProductDto!
+  product_id: Float!
+  quantity: Float!
+  updated_at: DateTime!
+}
+
+type GetPaymentDto {
+  amount: Float!
+  created_at: DateTime!
+  description: String
+  id: Float!
+  order: GetOrderDto!
+  order_id: Float!
+  paid_date: DateTime!
+  payment_status: PaymentStatus!
+  updated_at: DateTime!
+}
+
+type GetProductDto {
+  category: GetCategoryDto
+  category_id: Float!
+  created_at: DateTime!
+  description: String!
+  id: Int!
+  image: String!
+  is_active: Boolean!
+  name: String!
+  price: Float!
+  sale_price: Float!
+  updated_at: DateTime!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+type LinksType {
+  current: String!
+  first: String
+  last: String
+  next: String
+  previous: String
+}
+
+type ListCategoryDto {
+  data: [GetCategoryDto!]!
+  links: LinksType!
+  meta: MetaType!
+}
+
+type ListOrderDto {
+  data: [GetOrderDto!]!
+  links: LinksType!
+  meta: MetaType!
+}
+
+type ListProductDto {
+  data: [GetProductDto!]!
+  links: LinksType!
+  meta: MetaType!
+}
+
+type MetaType {
+  currentPage: Int!
+  filter: JSONObject
+  itemsPerPage: Int!
+  search: String
+  searchBy: [String!]
+  select: [String!]
+  sortBy: JSONObject
+  totalItems: Int!
+  totalPages: Int!
+}
+
+type Mutation {
+  cancelOrder(id: String!): GetOrderDto!
+  clearOrderItems(id: String!): GetOrderDto!
+  createCategory(createCategoryDto: CreateCategoryDto!): GetCategoryDto!
+  createOrder(createOrderDto: CreateOrderDto!): GetOrderDto!
+  createPayment(createPaymentDto: CreatePaymentDto!): GetPaymentDto!
+  createProduct(createProductDto: CreateProductDto!): GetProductDto!
+  deleteCategory(id: String!): GetCategoryDto!
+  deleteOrder(id: String!): GetOrderDto!
+  deleteProduct(id: String!): GetProductDto!
+  updateCategory(id: String!, updateCategoryDto: UpdateCategoryDto!): GetCategoryDto!
+  updateOrder(id: String!, updateOrderDto: UpdateOrderDto!): GetOrderDto!
+  updateProduct(id: String!, updateProductDto: UpdateProductDto!): GetProductDto!
+}
+
+enum OrderStatus {
+  CANCELLED
+  COMPLETED
+  PAID
+  PENDING
+  PROCESSING
+}
+
+enum PaymentStatus {
+  FAILED
+  PAID
+  PENDING
+}
+
+type Query {
+  categories(filter: [String!], limit: Int = 10, page: Int = 1, relations: [String!], search: String, searchBy: [String!], sortBy: [String!]): ListCategoryDto!
+  category(id: String!): GetCategoryDto!
+  healthStore: GetHealthDto!
+  order(id: String!): GetOrderDto!
+  orders(filter: [String!], limit: Int = 10, page: Int = 1, relations: [String!], search: String, searchBy: [String!], sortBy: [String!]): ListOrderDto!
+  product(id: String!): GetProductDto!
+  products(filter: [String!], limit: Int = 10, page: Int = 1, relations: [String!], search: String, searchBy: [String!], sortBy: [String!]): ListProductDto!
+}
+
+input UpdateCategoryDto {
+  description: String
+  image: String
+  name: String
+}
+
+input UpdateOrderDto {
+  note: String
+  order_date: DateTime
+  order_items: [CreateOrderItemDto!]
+}
+
+input UpdateProductDto {
+  category_id: Int
+  description: String
+  image: String
+  name: String
+}
