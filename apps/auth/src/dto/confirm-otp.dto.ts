@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import {
   IsEmail,
   IsNotEmpty,
@@ -12,26 +12,26 @@ import {
 export class ConfirmOtpDto {
   @IsEmail()
   @IsNotEmpty()
-  @Field()
+  @Field(() => String)
   email: string;
 
   @IsString()
   @IsOptional()
-  @Field()
+  @Field(() => String, { nullable: true })
   full_name?: string;
 
   @IsStrongPassword()
   @IsOptional()
-  @Field()
+  @Field(() => String)
   password?: string;
 
   @IsNumber()
   @IsNotEmpty()
-  @Field()
+  @Field(() => Int)
   confirmation_code: number;
 
   @IsString()
   @IsNotEmpty()
-  @Field()
+  @Field(() => String)
   hashed_code: string;
 }

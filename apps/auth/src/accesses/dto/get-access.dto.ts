@@ -1,55 +1,24 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsHexColor,
-  IsNotEmpty,
-  IsObject,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
-import { Expose, Type } from 'class-transformer';
 import { AbstractGetDto } from '@app/common';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GetEndpointDto } from './get-endpoint.dto';
 
 @ObjectType()
 export class GetAccessDto extends AbstractGetDto {
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
-  @Field()
+  @Field({ nullable: true })
   title?: string;
 
-  @IsString()
-  @IsUrl()
-  @IsOptional()
-  @Expose()
-  @Field()
+  @Field({ nullable: true })
   image?: string;
 
-  @IsString()
-  @IsHexColor()
-  @IsOptional()
-  @Expose()
-  @Field()
+  @Field({ nullable: true })
   color?: string;
 
-  @IsBoolean()
-  @Expose()
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   cannot_be_deleted?: boolean;
 
-  @IsBoolean()
-  @Expose()
-  @Field()
+  @Field({ nullable: true })
   has_full_access?: boolean;
 
-  @IsArray()
-  @IsObject({ each: true })
-  @IsNotEmpty({ each: true })
-  @Type(() => GetEndpointDto)
-  @Expose()
   @Field(() => [GetEndpointDto])
   endpoints?: GetEndpointDto[];
 }

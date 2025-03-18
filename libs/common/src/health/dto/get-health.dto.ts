@@ -4,8 +4,6 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { Expose } from 'class-transformer';
-import { IsEnum, IsString } from 'class-validator';
 
 enum HealthStatus {
   OK = 'ok',
@@ -27,38 +25,24 @@ registerEnumType(ConnectionStatus, {
 @ObjectType()
 @Directive('@shareable')
 export class GetHealthDto {
-  @IsEnum(HealthStatus)
-  @Expose()
   @Field()
   status: HealthStatus;
 
-  @IsEnum(ConnectionStatus)
-  @Expose()
   @Field()
   rabbitmq: ConnectionStatus;
 
-  @IsString()
-  @Expose()
   @Field()
   rabbitResponseTime: string;
 
-  @IsEnum(ConnectionStatus)
-  @Expose()
   @Field()
   database: ConnectionStatus;
 
-  @IsString()
-  @Expose()
   @Field()
   dbResponseTime: string;
 
-  @IsEnum(ConnectionStatus)
-  @Expose()
   @Field()
   redis: ConnectionStatus;
 
-  @IsString()
-  @Expose()
   @Field()
   redisResponseTime: string;
 }

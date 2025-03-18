@@ -1,5 +1,5 @@
 import { CreatePaymentDto } from './create-payment.dto';
-import { InputType } from '@nestjs/graphql';
+import { InputType, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdatePaymentDto extends CreatePaymentDto {}
+export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {}
