@@ -3,7 +3,6 @@ import {
   IsArray,
   IsEmail,
   IsNotEmpty,
-  IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
@@ -12,17 +11,15 @@ import {
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
-  @Field()
+  @Field(() => String)
   email: string;
 
   @IsString()
-  @IsOptional()
-  @Field()
-  full_name?: string;
+  @Field(() => String)
+  full_name: string;
 
   @IsStrongPassword()
-  @IsOptional()
-  @Field()
+  @Field(() => String)
   password?: string;
 
   @IsArray()

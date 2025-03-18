@@ -6,7 +6,6 @@ import { CurrentUser, NoCache } from '@app/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { GetUserDto } from './users/dto/get-user.dto';
-import { Serialize } from './users/interceptors/serialize.interceptor';
 import { EditInfoDto } from './dto/edit-info.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { User } from './libs';
@@ -24,7 +23,6 @@ export class AuthResolver {
   }
 
   @Mutation(() => GetUserDto, { name: 'confirm' })
-  @Serialize(GetUserDto)
   async confirmOtp(
     @Args('confirmOtpDto') confirmOtpDto: ConfirmOtpDto,
     @Context() context: any,
@@ -36,7 +34,6 @@ export class AuthResolver {
 
   @Mutation(() => GetUserDto, { name: 'changePassowrd' })
   @UseGuards(JwtAuthGuard)
-  @Serialize(GetUserDto)
   async changePassowrd(
     @CurrentUser() user: User,
     @Args('changePasswordDto') changePasswordDto: ChangePasswordDto,
@@ -48,7 +45,6 @@ export class AuthResolver {
   }
 
   @Mutation(() => GetUserDto, { name: 'login' })
-  @Serialize(GetUserDto)
   async login(@Args('loginDto') loginDto: LoginDto, @Context() context: any) {
     const { res } = context;
 
@@ -65,14 +61,12 @@ export class AuthResolver {
 
   @Query(() => GetUserDto, { name: 'info' })
   @UseGuards(JwtAuthGuard)
-  @Serialize(GetUserDto)
   async getUser(@CurrentUser() user: User) {
     return user;
   }
 
   @Mutation(() => GetUserDto, { name: 'info' })
   @UseGuards(JwtAuthGuard)
-  @Serialize(GetUserDto)
   async editInfo(
     @CurrentUser() user: User,
     @Args('editInfoDto') editInfoDto: EditInfoDto,

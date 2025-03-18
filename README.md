@@ -206,7 +206,7 @@ pnpm run test:e2e
   - [ ] Githab Readme
   - [x] Postman Graphql
   - [x] Auto generated swagger (only for storage download api)
-- [ ] Validations and Transforms
+- [x] Validations and Transforms
 - [ ] Checking cache system
 - [ ] Test
 

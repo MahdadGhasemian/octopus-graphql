@@ -9,12 +9,12 @@ export class CreateCategoryDto {
 
   @IsString()
   @IsOptional()
-  @Field()
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @IsString()
   @IsUrl()
   @IsOptional()
-  @Field()
+  @Field(() => String, { nullable: true })
   image?: string;
 }

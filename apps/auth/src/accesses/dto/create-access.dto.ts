@@ -15,23 +15,23 @@ import { Field, InputType } from '@nestjs/graphql';
 export class CreateAccessDto {
   @IsString()
   @IsNotEmpty()
-  @Field()
+  @Field(() => String)
   title: string;
 
   @IsString()
   @IsUrl()
   @IsOptional()
-  @Field()
+  @Field(() => String, { nullable: true })
   image?: string;
 
   @IsString()
   @IsHexColor()
   @IsOptional()
-  @Field()
+  @Field(() => String, { nullable: true })
   color?: string;
 
   @IsBoolean()
-  @Field()
+  @Field(() => Boolean)
   has_full_access: boolean;
 
   @IsArray()

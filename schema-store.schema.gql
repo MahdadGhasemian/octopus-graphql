@@ -3,8 +3,8 @@
 # ------------------------------------------------------
 
 input CreateCategoryDto {
-  description: String!
-  image: String!
+  description: String
+  image: String
   name: String!
 }
 
@@ -26,8 +26,8 @@ input CreatePaymentDto {
 
 input CreateProductDto {
   category_id: Int!
-  description: String!
-  image: String!
+  description: String
+  image: String
   is_active: Boolean!
   name: String!
   price: Float!
@@ -84,7 +84,7 @@ type GetPaymentDto {
   amount: Float!
   created_at: DateTime!
   description: String
-  id: Float!
+  id: Int!
   order: GetOrderDto!
   order_id: Float!
   paid_date: DateTime!

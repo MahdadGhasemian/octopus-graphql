@@ -1,10 +1,9 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsOptional, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 @InputType()
 export class EditInfoDto {
   @IsString()
-  @IsOptional()
-  @Field()
+  @Field(() => String)
   full_name?: string;
 }

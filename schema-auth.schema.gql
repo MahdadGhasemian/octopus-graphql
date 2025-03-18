@@ -3,31 +3,31 @@
 # ------------------------------------------------------
 
 input ChangePasswordDto {
-  confirmation_code: Float!
+  confirmation_code: Int!
   hashed_code: String!
   password: String!
 }
 
 input ConfirmOtpDto {
-  confirmation_code: Float!
+  confirmation_code: Int!
   email: String!
-  full_name: String!
+  full_name: String
   hashed_code: String!
   password: String!
 }
 
 input CreateAccessDto {
-  color: String!
+  color: String
   endpoints: [CreateEndpointAccessDto!]!
   has_full_access: Boolean!
-  image: String!
+  image: String
   title: String!
 }
 
 input CreateEndpointAccessDto {
   method: String!
   path: String!
-  tag: String!
+  tag: String
 }
 
 input CreateUserDto {
@@ -47,14 +47,14 @@ input EditInfoDto {
 }
 
 type GetAccessDto {
-  cannot_be_deleted: Boolean!
-  color: String!
+  cannot_be_deleted: Boolean
+  color: String
   created_at: DateTime!
   endpoints: [GetEndpointDto!]!
-  has_full_access: Boolean!
+  has_full_access: Boolean
   id: Int!
-  image: String!
-  title: String!
+  image: String
+  title: String
   updated_at: DateTime!
 }
 

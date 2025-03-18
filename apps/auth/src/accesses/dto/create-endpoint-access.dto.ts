@@ -1,22 +1,18 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Expose } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CreateEndpointAccessDto {
   @IsString()
   @IsOptional()
-  @Expose()
-  @Field()
+  @Field(() => String, { nullable: true })
   tag?: string;
 
   @IsString()
-  @Expose()
-  @Field()
+  @Field(() => String)
   path: string;
 
   @IsString()
-  @Expose()
-  @Field()
+  @Field(() => String)
   method: string;
 }

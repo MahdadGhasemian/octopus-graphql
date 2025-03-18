@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 import {
   IsBoolean,
   IsNumber,
@@ -10,18 +10,18 @@ import {
 @InputType()
 export class CreateProductDto {
   @IsString()
-  @Field()
+  @Field(() => String)
   name: string;
 
   @IsString()
   @IsOptional()
-  @Field()
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @IsString()
   @IsUrl()
   @IsOptional()
-  @Field()
+  @Field(() => String, { nullable: true })
   image?: string;
 
   @IsNumber()
@@ -30,14 +30,14 @@ export class CreateProductDto {
   category_id?: number;
 
   @IsNumber()
-  @Field()
+  @Field(() => Float)
   price: number;
 
   @IsNumber()
-  @Field()
+  @Field(() => Float)
   sale_price: number;
 
   @IsBoolean()
-  @Field()
+  @Field(() => Boolean)
   is_active?: boolean;
 }
