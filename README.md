@@ -15,9 +15,9 @@ An **octopus** has three hearts! One heart circulates blood around the body, whi
 ## Getting Started
 
 ```bash
-git clone https://github.com/MahdadGhasemian/octopus.git
+git clone https://github.com/MahdadGhasemian/octopus-graphql.git
 
-cd octopus
+cd octopus-graphql
 pnpm i
 docker-compose up --build # For the first add the --build
 ```
@@ -78,7 +78,7 @@ password: randompassword
 ```
 
 ```bash
-mcli alias set octopus http://localhost:9100 admin randompassword
+mcli alias set octopus-graphql http://localhost:9100 admin randompassword
 ```
 
 ## Services
