@@ -10,6 +10,7 @@ import { User } from '../libs';
 import { OrdersService } from './orders.service';
 import { UseGuards } from '@nestjs/common';
 import {
+  CacheControl,
   CurrentUser,
   JwtAuthAccessGuard,
   PaginateGraph,
@@ -36,6 +37,7 @@ export class OrdersResolver {
 
   @Query(() => ListOrderDto, { name: 'orders' })
   @UseGuards(JwtAuthAccessGuard)
+  @CacheControl({ maxAge: 100, scope: 'PRIVATE' })
   async findAll(
     @Args() _: PaginateQueryGraph,
     @PaginateGraph() { query, config },
@@ -46,6 +48,7 @@ export class OrdersResolver {
 
   @Query(() => GetOrderDto, { name: 'order' })
   @UseGuards(JwtAuthAccessGuard)
+  @CacheControl({ maxAge: 100, scope: 'PRIVATE' })
   async findOne(@CurrentUser() user: User, @Args('id') id: string) {
     return this.ordersService.findOne({ id: +id }, user);
   }

@@ -207,7 +207,7 @@ pnpm run test:e2e
   - [x] Postman Graphql
   - [x] Auto generated swagger (only for storage download api)
 - [x] Validations and Transforms
-- [ ] Checking cache system
+- [x] Check the cache system
 - [ ] Test
 
 ## Contributing
@@ -219,6 +219,10 @@ Contributions are welcome!
 This project is licensed under the MIT License.
 
 ## Change log
+
+### 0.0.2 (2025-03-18)
+
+- Implemented caching system support.
 
 ### 0.0.1 (2025-03-18)
 

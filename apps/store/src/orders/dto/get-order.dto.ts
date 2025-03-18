@@ -1,8 +1,9 @@
-import { AbstractGetDto, OrderStatus } from '@app/common';
+import { AbstractGetDto, CacheControl, OrderStatus } from '@app/common';
 import { GetOrderItemDto } from './get-order-items.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
+@CacheControl({ inheritMaxAge: true })
 export class GetOrderDto extends AbstractGetDto {
   @Field()
   order_date?: Date;

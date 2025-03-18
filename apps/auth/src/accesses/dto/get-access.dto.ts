@@ -1,8 +1,9 @@
-import { AbstractGetDto } from '@app/common';
+import { AbstractGetDto, CacheControl } from '@app/common';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GetEndpointDto } from './get-endpoint.dto';
 
 @ObjectType()
+@CacheControl({ inheritMaxAge: true })
 export class GetAccessDto extends AbstractGetDto {
   @Field({ nullable: true })
   title?: string;

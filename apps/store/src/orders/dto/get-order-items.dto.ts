@@ -1,8 +1,9 @@
 import { GetProductDto } from '../../products/dto/get-product.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { AbstractGetDto } from '@app/common';
+import { AbstractGetDto, CacheControl } from '@app/common';
 
 @ObjectType()
+@CacheControl({ inheritMaxAge: true })
 export class GetOrderItemDto extends AbstractGetDto {
   @Field()
   product_id: number;

@@ -1,9 +1,11 @@
 import { Directive, Field, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { Column, SortBy } from 'nestjs-paginate/lib/helper';
+import { CacheControl } from '../decorators';
 
 @ObjectType()
 @Directive('@shareable')
+@CacheControl({ inheritMaxAge: true })
 export class MetaType<T> {
   @Field(() => Int)
   itemsPerPage: number;
@@ -35,6 +37,7 @@ export class MetaType<T> {
 
 @ObjectType()
 @Directive('@shareable')
+@CacheControl({ inheritMaxAge: true })
 export class LinksType {
   @Field(() => String, { nullable: true })
   first?: string;
@@ -53,6 +56,7 @@ export class LinksType {
 }
 
 @ObjectType()
+@CacheControl({ inheritMaxAge: true })
 export class ListDto<T> {
   @Field(() => MetaType<T>)
   meta: MetaType<T>;
