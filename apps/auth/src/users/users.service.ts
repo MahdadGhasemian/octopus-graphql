@@ -72,6 +72,12 @@ export class UsersService {
     return this.usersRepository.findOne(getUserDto);
   }
 
+  async findOneWithAccess(getUserDto: GetUserDto) {
+    return this.usersRepository.findOne(getUserDto, {
+      accesses: true,
+    });
+  }
+
   async findOneNoCheck(settingDto: Omit<GetUserDto, 'accesses'>) {
     return this.usersRepository.findOneNoCheck(settingDto, {
       accesses: true,

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import {
   DatabaseModule,
   HealthModule,
@@ -12,9 +11,6 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import * as Joi from 'joi';
-import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from './strategies/local.strategy';
-import { JwtStrategy } from './strategies/jwt-strategy';
 import { AccessesModule } from './accesses/accesses.module';
 import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
@@ -22,8 +18,6 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { GqlModuleOptions, GraphQLModule, Int } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { AuthResolver } from './auth.resolver';
-import { AuthController } from './auth.controller';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import {
@@ -35,6 +29,7 @@ import {
 import Keyv from 'keyv';
 import KeyvRedis from '@keyv/redis';
 import { KeyvAdapter } from '@apollo/utils.keyvadapter';
+import { AuthenticationsModule } from './authentications/authentications.module';
 
 @Module({
   imports: [
@@ -51,21 +46,6 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter';
         POSTGRES_DATABASE_AUTH: Joi.string().required(),
         GRAPHQL_SCHEMA_FILE_AUTH: Joi.string().optional(),
       }),
-    }),
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => ({
-        signOptions: {
-          algorithm: 'RS256',
-          expiresIn: `${configService.get('JWT_EXPIRATION')}s`,
-        },
-        privateKey: configService
-          .get<string>('JWT_PRIVATE_KEY')
-          .replace(/\\n/g, '\n'),
-        publicKey: configService
-          .get<string>('JWT_PUBLIC_KEY')
-          .replace(/\\n/g, '\n'),
-      }),
-      inject: [ConfigService],
     }),
     RabbitmqModule.forRoot(STORE_SERVICE, 'RABBITMQ_STORE_QUEUE_NAME'),
     CacheModule.registerAsync<RedisClientOptions>({
@@ -166,15 +146,11 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter';
       inject: [ConfigService],
     }),
     HealthModule.forRoot('RABBITMQ_AUTH_QUEUE_NAME', 'healthAuth'),
+    AuthenticationsModule,
     UsersModule,
     AccessesModule,
   ],
-  controllers: [AuthController],
   providers: [
-    AuthResolver,
-    AuthService,
-    LocalStrategy,
-    JwtStrategy,
     {
       provide: APP_INTERCEPTOR,
       useFactory: (cacheManager: any, reflector: Reflector) => {

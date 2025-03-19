@@ -6,10 +6,8 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { JwtAccessGuard } from '../guards/jwt-access.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ListUserDto } from './dto/list-user.dto';
 import {
@@ -22,6 +20,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAccessDto } from './dto/update-user-access.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { GetAccessDto } from '../accesses/dto/get-access.dto';
+import { JwtAccessGuard, JwtAuthGuard } from '../libs';
 
 @Resolver(() => GetUserDto)
 @UseGuards(JwtAuthGuard)

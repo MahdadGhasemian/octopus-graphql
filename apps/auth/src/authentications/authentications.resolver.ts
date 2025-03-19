@@ -1,24 +1,25 @@
 import { UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthenticationsService } from './authentications.service';
 import { GetOtpDto } from './dto/get-otp.dto';
 import { ConfirmOtpDto } from './dto/confirm-otp.dto';
 import { CacheControl, CurrentUser } from '@app/common';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
-import { GetUserDto } from './users/dto/get-user.dto';
+import { GetUserDto } from '../users/dto/get-user.dto';
 import { EditInfoDto } from './dto/edit-info.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { User } from './libs';
+import { JwtAuthGuard, User } from '../libs';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GetOtpResponseDto } from './dto/get-otp.response.dto';
 
 @Resolver()
-export class AuthResolver {
-  constructor(private readonly authService: AuthService) {}
+export class AuthenticationsResolver {
+  constructor(
+    private readonly authenticationsService: AuthenticationsService,
+  ) {}
 
   @Mutation(() => GetOtpResponseDto, { name: 'otp' })
   async getOtp(@Args('getOtpDto') getOtpDto: GetOtpDto) {
-    return this.authService.getOtp(getOtpDto);
+    return this.authenticationsService.getOtp(getOtpDto);
   }
 
   @Mutation(() => GetUserDto, { name: 'confirm' })
@@ -28,7 +29,7 @@ export class AuthResolver {
   ) {
     const { res } = context;
 
-    return this.authService.confirmOtp(confirmOtpDto, res);
+    return this.authenticationsService.confirmOtp(confirmOtpDto, res);
   }
 
   @Mutation(() => GetUserDto, { name: 'changePassowrd' })
@@ -40,14 +41,18 @@ export class AuthResolver {
   ) {
     const { res } = context;
 
-    return this.authService.changePassword(changePasswordDto, res, user);
+    return this.authenticationsService.changePassword(
+      changePasswordDto,
+      res,
+      user,
+    );
   }
 
   @Mutation(() => GetUserDto, { name: 'login' })
   async login(@Args('loginDto') loginDto: LoginDto, @Context() context: any) {
     const { res } = context;
 
-    return this.authService.login(loginDto, res);
+    return this.authenticationsService.login(loginDto, res);
   }
 
   @Mutation(() => GetUserDto, { name: 'logout', nullable: true })
@@ -55,7 +60,7 @@ export class AuthResolver {
   async logout(@Context() context: any) {
     const { res } = context;
 
-    this.authService.logout(res);
+    this.authenticationsService.logout(res);
   }
 
   @Query(() => GetUserDto, { name: 'info' })
@@ -71,6 +76,6 @@ export class AuthResolver {
     @CurrentUser() user: User,
     @Args('editInfoDto') editInfoDto: EditInfoDto,
   ) {
-    return this.authService.editInfo(editInfoDto, user);
+    return this.authenticationsService.editInfo(editInfoDto, user);
   }
 }

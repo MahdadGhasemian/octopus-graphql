@@ -4,8 +4,6 @@ import { CreateAccessDto } from './dto/create-access.dto';
 import { UpdateAccessDto } from './dto/update-access.dto';
 import { CacheControl, PaginateGraph, PaginateQueryGraph } from '@app/common';
 import { GetAccessDto } from './dto/get-access.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { JwtAccessGuard } from '../guards/jwt-access.guard';
 import { ListAccessDto } from './dto/list-access.dto';
 import {
   Args,
@@ -16,6 +14,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { GetEndpointDto } from './dto/get-endpoint.dto';
+import { JwtAccessGuard, JwtAuthGuard } from '../libs';
 
 @Resolver(() => GetAccessDto)
 export class AccessesResolver {
