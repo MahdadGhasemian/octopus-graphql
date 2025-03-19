@@ -4,10 +4,9 @@ import {
   MessageAckInterceptor,
   NoCache,
 } from '@app/common';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { GetUserDto } from '../users/dto/get-user.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { JwtAccessGuard } from '../guards/jwt-access.guard';
+import { JwtAccessGuard, JwtAuthGuard } from '../libs';
 
 @NoCache()
 @Controller()

@@ -8,10 +8,10 @@ import { AuthenticationsService } from './authentications.service';
 import { AuthenticationsController } from './authentications.controller';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
-import { LocalStrategy } from '../strategies/local.strategy';
-import { JwtStrategy } from '../strategies/jwt-strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersRepository } from '../users/users.repository';
+import { JwtStrategy } from '../libs/strategies/jwt-strategy';
+import { LocalStrategy } from '../libs/strategies/local.strategy';
 
 @Module({
   imports: [

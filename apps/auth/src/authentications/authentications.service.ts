@@ -4,7 +4,6 @@ import { GetOtpDto } from './dto/get-otp.dto';
 import { ConfirmOtpDto } from './dto/confirm-otp.dto';
 import { AuthCommon } from '@app/common';
 import { Response } from 'express';
-import { TokenPayload } from '../interfaces/token-payload.interface';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
@@ -13,7 +12,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { randomBytes } from 'crypto';
-import { User } from '../libs';
+import { TokenPayload, User } from '../libs';
 
 @Injectable()
 export class AuthenticationsService {
@@ -194,6 +193,14 @@ export class AuthenticationsService {
     if (!isEqual) {
       throw new UnauthorizedException('Credentials are not valid');
     }
+
+    return user;
+  }
+
+  async getUser(user_id: number) {
+    const user = await this.usersService.findOneWithAccess({ id: user_id });
+
+    delete user.hashed_password;
 
     return user;
   }

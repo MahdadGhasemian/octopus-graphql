@@ -3,12 +3,11 @@ import { AuthenticationsService } from './authentications.service';
 import { GetOtpDto } from './dto/get-otp.dto';
 import { ConfirmOtpDto } from './dto/confirm-otp.dto';
 import { CacheControl, CurrentUser } from '@app/common';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { GetUserDto } from '../users/dto/get-user.dto';
 import { EditInfoDto } from './dto/edit-info.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { User } from '../libs';
+import { JwtAuthGuard, User } from '../libs';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GetOtpResponseDto } from './dto/get-otp.response.dto';
 
