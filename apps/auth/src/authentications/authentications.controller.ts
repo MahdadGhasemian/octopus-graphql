@@ -4,14 +4,14 @@ import {
   MessageAckInterceptor,
   NoCache,
 } from '@app/common';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { GetUserDto } from './users/dto/get-user.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { GetUserDto } from '../users/dto/get-user.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { JwtAccessGuard } from './guards/jwt-access.guard';
+import { JwtAccessGuard } from '../guards/jwt-access.guard';
 
 @NoCache()
 @Controller()
-export class AuthController {
+export class AuthenticationsController {
   @MessagePattern(EVENT_NAME_AUTHENTICATE_AND_CHECK_ACCESS)
   @UseGuards(JwtAuthGuard, JwtAccessGuard)
   @UseInterceptors(MessageAckInterceptor)
