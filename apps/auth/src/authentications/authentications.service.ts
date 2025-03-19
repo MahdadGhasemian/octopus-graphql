@@ -60,7 +60,7 @@ export class AuthenticationsService {
   }
 
   async confirmOtp(confirmOtpDto: ConfirmOtpDto, response: Response) {
-    // Retereve hashed_code from Redis
+    // Retrieve hashed_code from Redis
     const cache_prefix = this.configService.get<string>(
       'REDIS_CACHE_KEY_PREFIX_AUTH',
     );
@@ -117,7 +117,7 @@ export class AuthenticationsService {
     response: Response,
     user: User,
   ) {
-    // Retereve hashed_code from Redis
+    // Retrieve hashed_code from Redis
     const cache_prefix = this.configService.get<string>(
       'REDIS_CACHE_KEY_PREFIX_AUTH',
     );
