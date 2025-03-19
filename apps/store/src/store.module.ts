@@ -41,6 +41,7 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter';
       isGlobal: true,
       validationSchema: Joi.object({
         HTTP_PORT_STORE: Joi.number().required(),
+        JWT_PUBLIC_KEY: Joi.string().required(),
         REDIS_CACHE_KEY_PREFIX_STORE: Joi.string().required(),
         GRAPHQL_SCHEMA_FILE_STORE: Joi.string().optional(),
       }),

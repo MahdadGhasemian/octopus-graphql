@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { LoggerModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
-import * as Joi from 'joi';
 import { ProductsRepository } from './products.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from '../libs';
@@ -15,12 +14,6 @@ import { CategoriesModule } from '../categories/categories.module';
     LoggerModule,
     ConfigModule,
     TypeOrmModule.forFeature([Product]),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema: Joi.object({
-        HTTP_PORT_STORE: Joi.number().required(),
-      }),
-    }),
     CategoriesModule,
   ],
   providers: [
