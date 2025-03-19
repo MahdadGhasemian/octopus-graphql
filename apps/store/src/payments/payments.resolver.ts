@@ -6,7 +6,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { User } from '../libs';
-import { CurrentUser, JwtAuthAccessGuard } from '@app/common';
+import { CurrentUser, AccessGuard } from '@app/common';
 import { PaymentsService } from './payments.service';
 import { UseGuards } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -18,7 +18,7 @@ export class PaymetnsResolver {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   @Mutation(() => GetPaymentDto, { name: 'createPayment' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(AccessGuard)
   async create(
     @CurrentUser() user: User,
     @Args('createPaymentDto') createPaymentDto: CreatePaymentDto,

@@ -6,9 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from '../libs';
 import { UsersResolver } from './users.resolver';
+import { UsersController } from './users.controller';
 
 @Module({
   imports: [ConfigModule, TypeOrmModule.forFeature([User]), AccessesModule],
+  controllers: [UsersController],
   providers: [UsersResolver, UsersService, UsersRepository],
   exports: [UsersService],
 })

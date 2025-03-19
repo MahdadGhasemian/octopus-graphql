@@ -13,6 +13,8 @@ import { ListUserDto } from './dto/list-user.dto';
 import {
   CacheControl,
   FoceToClearCache,
+  AccessGuard,
+  JwtAuthGuard,
   PaginateGraph,
   PaginateQueryGraph,
 } from '@app/common';
@@ -20,7 +22,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAccessDto } from './dto/update-user-access.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { GetAccessDto } from '../accesses/dto/get-access.dto';
-import { JwtAccessGuard, JwtAuthGuard } from '../libs';
 
 @Resolver(() => GetUserDto)
 @UseGuards(JwtAuthGuard)
@@ -28,13 +29,13 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Mutation(() => GetUserDto, { name: 'createUser' })
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(AccessGuard)
   async create(@Args('createUserDto') createUserDto: CreateUserDto) {
     return this.usersService.propareNewUser(createUserDto);
   }
 
   @Query(() => ListUserDto, { name: 'users' })
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(AccessGuard)
   @CacheControl({ maxAge: 100 })
   async findAll(
     @Args() _: PaginateQueryGraph,
@@ -44,14 +45,14 @@ export class UsersResolver {
   }
 
   @Query(() => GetUserDto, { name: 'user' })
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(AccessGuard)
   @CacheControl({ maxAge: 100 })
   async findOne(@Args('id') id: string) {
     return this.usersService.findOne({ id: +id });
   }
 
   @Mutation(() => GetUserDto, { name: 'updateUser' })
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(AccessGuard)
   async update(
     @Args('id') id: string,
     @Args('updateUserDto') updateUserDto: UpdateUserDto,
@@ -60,13 +61,13 @@ export class UsersResolver {
   }
 
   @Mutation(() => GetUserDto, { name: 'deleteUser' })
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(AccessGuard)
   async remove(@Args('id') id: string) {
     return this.usersService.remove({ id: +id });
   }
 
   @Mutation(() => GetUserDto, { name: 'updateUserAccess' })
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(AccessGuard)
   @FoceToClearCache('/users')
   async updateUserAccess(
     @Args('id') id: string,
@@ -77,6 +78,6 @@ export class UsersResolver {
 
   @ResolveField(() => [GetAccessDto], { name: 'accesses', nullable: true })
   async accesses(@Parent() user: GetUserDto) {
-    return this.usersService.getAccessesByAccessId(user.id);
+    return this.usersService.getAccessesByUserId(user.id);
   }
 }

@@ -4,6 +4,7 @@ import {
   DatabaseModule,
   HealthModule,
   HttpCacheInterceptor,
+  JwtStrategy,
   LoggerModule,
   RabbitmqModule,
   REDIS_CACHE_KEY_PREFIX_STORE,
@@ -33,6 +34,10 @@ import {
 import Keyv from 'keyv';
 import KeyvRedis from '@keyv/redis';
 import { KeyvAdapter } from '@apollo/utils.keyvadapter';
+import { UsersService } from './users/users.service';
+import { UsersRepository } from './users/users.repository';
+import { User } from './libs';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -41,6 +46,7 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter';
       isGlobal: true,
       validationSchema: Joi.object({
         HTTP_PORT_STORE: Joi.number().required(),
+        JWT_PUBLIC_KEY: Joi.string().required(),
         REDIS_CACHE_KEY_PREFIX_STORE: Joi.string().required(),
         GRAPHQL_SCHEMA_FILE_STORE: Joi.string().optional(),
       }),
@@ -150,8 +156,16 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter';
     ProductsModule,
     OrdersModule,
     PaymentsModule,
+    TypeOrmModule.forFeature([User]),
   ],
   providers: [
+    // JwtStrategy,
+    {
+      provide: JwtStrategy,
+      useFactory: (configService: ConfigService, usersService: UsersService) =>
+        new JwtStrategy(configService, usersService),
+      inject: [ConfigService, UsersService],
+    },
     {
       provide: APP_INTERCEPTOR,
       useFactory: (cacheManager: any, reflector: Reflector) => {
@@ -163,6 +177,8 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter';
       },
       inject: [CACHE_MANAGER, Reflector],
     },
+    UsersService,
+    UsersRepository,
   ],
 })
 export class StoreModule {}

@@ -2,7 +2,13 @@ import { UseGuards } from '@nestjs/common';
 import { AccessesService } from './accesses.service';
 import { CreateAccessDto } from './dto/create-access.dto';
 import { UpdateAccessDto } from './dto/update-access.dto';
-import { CacheControl, PaginateGraph, PaginateQueryGraph } from '@app/common';
+import {
+  CacheControl,
+  AccessGuard,
+  JwtAuthGuard,
+  PaginateGraph,
+  PaginateQueryGraph,
+} from '@app/common';
 import { GetAccessDto } from './dto/get-access.dto';
 import { ListAccessDto } from './dto/list-access.dto';
 import {
@@ -14,20 +20,19 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { GetEndpointDto } from './dto/get-endpoint.dto';
-import { JwtAccessGuard, JwtAuthGuard } from '../libs';
 
 @Resolver(() => GetAccessDto)
 export class AccessesResolver {
   constructor(private readonly accessesService: AccessesService) {}
 
   @Mutation(() => GetAccessDto, { name: 'createAccess' })
-  @UseGuards(JwtAuthGuard, JwtAccessGuard)
+  @UseGuards(JwtAuthGuard, AccessGuard)
   async create(@Args('createAccessDto') createAccessDto: CreateAccessDto) {
     return this.accessesService.create(createAccessDto);
   }
 
   @Query(() => ListAccessDto, { name: 'accesses' })
-  @UseGuards(JwtAuthGuard, JwtAccessGuard)
+  @UseGuards(JwtAuthGuard, AccessGuard)
   @CacheControl({ maxAge: 100 })
   async findAll(
     @Args() _: PaginateQueryGraph,
@@ -37,14 +42,14 @@ export class AccessesResolver {
   }
 
   @Query(() => GetAccessDto, { name: 'access' })
-  @UseGuards(JwtAuthGuard, JwtAccessGuard)
+  @UseGuards(JwtAuthGuard, AccessGuard)
   @CacheControl({ maxAge: 100 })
   async findOne(@Args('id') id: string) {
     return this.accessesService.findOne({ id: +id });
   }
 
   @Mutation(() => GetAccessDto, { name: 'updateAccess' })
-  @UseGuards(JwtAuthGuard, JwtAccessGuard)
+  @UseGuards(JwtAuthGuard, AccessGuard)
   async update(
     @Args('id') id: string,
     @Args('updateAccessDto') updateAccessDto: UpdateAccessDto,
@@ -53,7 +58,7 @@ export class AccessesResolver {
   }
 
   @Mutation(() => GetAccessDto, { name: 'deleteAccess' })
-  @UseGuards(JwtAuthGuard, JwtAccessGuard)
+  @UseGuards(JwtAuthGuard, AccessGuard)
   async remove(@Args('id') id: string) {
     return this.accessesService.remove({ id: +id });
   }

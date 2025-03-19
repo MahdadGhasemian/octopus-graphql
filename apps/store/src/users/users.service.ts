@@ -19,4 +19,17 @@ export class UsersService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     return this.usersRepository.findOneAndUpdate({ id }, { ...updateUserDto });
   }
+
+  async getUser(user_id: number) {
+    const user = await this.usersRepository.findOne(
+      { id: user_id },
+      // {
+      // accesses: {
+      //     endpoints: true,
+      // },
+      // },
+    );
+
+    return user;
+  }
 }
