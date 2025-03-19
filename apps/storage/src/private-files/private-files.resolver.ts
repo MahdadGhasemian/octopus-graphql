@@ -1,5 +1,5 @@
 import { PrivateFilesService } from './private-files.service';
-import { CurrentUser, JwtAccessGuard, JwtAuthGuard } from '@app/common';
+import { CurrentUser, AccessGuard, JwtAuthGuard } from '@app/common';
 import { User } from '../libs';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { GraphqlUploadPrivateFileResponseDto } from './dto/graphql-upload-private-file-response.dto';
@@ -13,7 +13,7 @@ export class PrivateFilesResolver {
   @Mutation(() => GraphqlUploadPrivateFileResponseDto, {
     name: 'uploadPrivateFile',
   })
-  @UseGuards(JwtAuthGuard, JwtAccessGuard)
+  @UseGuards(JwtAuthGuard, AccessGuard)
   async uploadFile(
     @CurrentUser() user: User,
     @Args({ name: 'file', type: () => GraphQLUpload }) file: FileUpload,

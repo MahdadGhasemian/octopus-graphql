@@ -10,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { PrivateFilesService } from './private-files.service';
 import { Response } from 'express';
-import { CurrentUser, JwtAccessGuard } from '@app/common';
+import { CurrentUser, AccessGuard } from '@app/common';
 import { GetPrivateFileDto } from './dto/get-private-file.dto';
 import { User } from '../libs';
 
@@ -20,7 +20,7 @@ export class PrivateFilesController {
   constructor(private readonly privateFilesService: PrivateFilesService) {}
 
   @Get(':bucket_name/:object_name')
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(AccessGuard)
   async downloadFile(
     @CurrentUser() user: User,
     @Param('bucket_name') bucket_name: string,

@@ -12,8 +12,8 @@ import { ReadUserAccessEvent } from '../events';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
-export class JwtAccessGuard implements CanActivate {
-  private readonly logger = new Logger(JwtAccessGuard.name);
+export class AccessGuard implements CanActivate {
+  private readonly logger = new Logger(AccessGuard.name);
 
   constructor(@Inject(AUTH_SERVICE) private readonly authClient: ClientProxy) {}
 
