@@ -9,7 +9,8 @@ import {
 import { ProductsService } from './products.service';
 import {
   CacheControl,
-  JwtAuthAccessGuard,
+  JwtAccessGuard,
+  JwtAuthGuard,
   PaginateGraph,
   PaginateQueryGraph,
 } from '@app/common';
@@ -29,7 +30,7 @@ export class ProductsResolver {
   ) {}
 
   @Mutation(() => GetProductDto, { name: 'createProduct' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async create(@Args('createProductDto') createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
@@ -47,7 +48,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => GetProductDto, { name: 'updateProduct' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async update(
     @Args('id') id: string,
     @Args('updateProductDto') updateProductDto: UpdateProductDto,
@@ -56,7 +57,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => GetProductDto, { name: 'deleteProduct' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async remove(@Args('id') id: string) {
     return this.productsService.remove({ id: +id });
   }

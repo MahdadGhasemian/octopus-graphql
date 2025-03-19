@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import {
+  AUTH_SERVICE,
   DatabaseModule,
   HealthModule,
   HttpCacheInterceptor,
@@ -47,6 +48,7 @@ import { AuthenticationsModule } from './authentications/authentications.module'
         GRAPHQL_SCHEMA_FILE_AUTH: Joi.string().optional(),
       }),
     }),
+    RabbitmqModule.forRoot(AUTH_SERVICE, 'RABBITMQ_AUTH_QUEUE_NAME'),
     RabbitmqModule.forRoot(STORE_SERVICE, 'RABBITMQ_STORE_QUEUE_NAME'),
     CacheModule.registerAsync<RedisClientOptions>({
       imports: [ConfigModule],

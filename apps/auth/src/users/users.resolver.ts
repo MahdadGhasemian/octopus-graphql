@@ -13,6 +13,8 @@ import { ListUserDto } from './dto/list-user.dto';
 import {
   CacheControl,
   FoceToClearCache,
+  JwtAccessGuard,
+  JwtAuthGuard,
   PaginateGraph,
   PaginateQueryGraph,
 } from '@app/common';
@@ -20,7 +22,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAccessDto } from './dto/update-user-access.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { GetAccessDto } from '../accesses/dto/get-access.dto';
-import { JwtAccessGuard, JwtAuthGuard } from '../libs';
 
 @Resolver(() => GetUserDto)
 @UseGuards(JwtAuthGuard)
@@ -77,6 +78,6 @@ export class UsersResolver {
 
   @ResolveField(() => [GetAccessDto], { name: 'accesses', nullable: true })
   async accesses(@Parent() user: GetUserDto) {
-    return this.usersService.getAccessesByAccessId(user.id);
+    return this.usersService.getAccessesByUserId(user.id);
   }
 }

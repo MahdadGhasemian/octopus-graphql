@@ -2,7 +2,7 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { GetOtpDto } from './dto/get-otp.dto';
 import { ConfirmOtpDto } from './dto/confirm-otp.dto';
-import { AuthCommon } from '@app/common';
+import { AuthCommon, TokenPayload } from '@app/common';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -12,7 +12,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { randomBytes } from 'crypto';
-import { TokenPayload, User } from '../libs';
+import { User } from '../libs';
 
 @Injectable()
 export class AuthenticationsService {
@@ -244,7 +244,11 @@ export class AuthenticationsService {
   }
 
   private async unauthenticate(response: Response): Promise<string> {
-    response.cookie('Authentication', null);
+    // response.cookie('Authentication', null);
+    response.cookie('Authentication', '', {
+      httpOnly: true,
+      expires: new Date(),
+    });
 
     return null;
   }

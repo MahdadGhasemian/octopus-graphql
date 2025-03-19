@@ -1,28 +1,30 @@
 import {
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
+  Inject,
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { Reflector } from '@nestjs/core';
+import { lastValueFrom } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
+import { AUTH_SERVICE, EVENT_NAME_USER_ACCESS_READ } from '../constants';
+import { ReadUserAccessEvent } from '../events';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class JwtAccessGuard implements CanActivate {
   private readonly logger = new Logger(JwtAccessGuard.name);
 
-  constructor(private readonly reflector: Reflector) {}
+  constructor(@Inject(AUTH_SERVICE) private readonly authClient: ClientProxy) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const type = context.getType<string>();
+    let gqlContext;
 
+    let user: any;
     let path: string;
     let method: string;
-    let user: any;
+    // let pathKey: string;
 
     if (type === 'http') {
       // Extract data from HTTP request
@@ -37,31 +39,49 @@ export class JwtAccessGuard implements CanActivate {
       method = data?.method;
       user = data?.user;
     } else if (type === 'graphql') {
-      // Handle GraphQL request
+      // Extract data from GraphQL request
       const ctx = GqlExecutionContext.create(context);
-      const gqlContext = ctx.getContext();
+      gqlContext = ctx.getContext();
       path = gqlContext.req?.url || 'graphql';
       method = 'POST';
       user = gqlContext.req?.user;
+
+      // const gqlInfo = ctx.getInfo();
+      // pathKey = gqlInfo.path.key;
     } else {
       return false;
     }
 
-    const accesses = user?.accesses;
-    const has_full_access = !!accesses?.find(
-      (item: { has_full_access?: boolean }) => item.has_full_access,
-    );
-
-    if (!has_full_access) {
-      const accessList = accesses?.flatMap(
-        (item: { endpoints?: any[] }) => item.endpoints,
-      );
-      if (!this.hasAccess(method, path, accessList)) {
-        throw new ForbiddenException('Access denied!');
-      }
+    if (!user) {
+      return false;
     }
 
-    return true;
+    try {
+      const accesses = await lastValueFrom(
+        this.authClient.send(
+          EVENT_NAME_USER_ACCESS_READ,
+          new ReadUserAccessEvent(user.id),
+        ),
+      );
+
+      const has_full_access = !!accesses?.find(
+        (item: { has_full_access?: boolean }) => item.has_full_access,
+      );
+
+      if (!has_full_access) {
+        const accessList = accesses?.flatMap(
+          (item: { endpoints?: any[] }) => item.endpoints || [],
+        );
+
+        if (!this.hasAccess(method, path, accessList)) {
+          return false;
+        }
+      }
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   hasAccess(method: string, path: string, accessList?: any[]) {

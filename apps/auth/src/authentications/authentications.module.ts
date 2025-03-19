@@ -5,13 +5,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Access, User } from '../libs';
 import { AuthenticationsResolver } from './authentications.resolver';
 import { AuthenticationsService } from './authentications.service';
-import { AuthenticationsController } from './authentications.controller';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersRepository } from '../users/users.repository';
-import { JwtStrategy } from '../libs/strategies/jwt-strategy';
 import { LocalStrategy } from '../libs/strategies/local.strategy';
+import { JwtStrategy } from '@app/common';
 
 @Module({
   imports: [
@@ -35,10 +34,14 @@ import { LocalStrategy } from '../libs/strategies/local.strategy';
     AccessesModule,
     UsersModule,
   ],
-  controllers: [AuthenticationsController],
   providers: [
     LocalStrategy,
-    JwtStrategy,
+    {
+      provide: JwtStrategy,
+      useFactory: (configService: ConfigService, usersService: UsersService) =>
+        new JwtStrategy(configService, usersService),
+      inject: [ConfigService, UsersService],
+    },
     AuthenticationsResolver,
     AuthenticationsService,
     UsersService,

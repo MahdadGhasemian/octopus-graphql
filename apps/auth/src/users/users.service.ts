@@ -136,23 +136,39 @@ export class UsersService {
     return user;
   }
 
-  async getUser(getUserDto: GetUserDto) {
-    const user = await this.usersRepository.findOne(getUserDto, {
-      accesses: {
-        //     endpoints: true,
+  async getUser(user_id: number) {
+    const user = await this.usersRepository.findOne(
+      { id: user_id },
+      {
+        accesses: {
+          //     endpoints: true,
+        },
       },
-    });
+    );
 
     delete user.hashed_password;
 
     return user;
   }
 
-  async getAccessesByAccessId(user_id: number) {
+  async getAccessesByUserId(user_id: number) {
     const access = await this.usersRepository.findOneNoCheck(
       { id: user_id },
       {
         accesses: true,
+      },
+    );
+
+    return access?.accesses || [];
+  }
+
+  async getAccessesAndEndpointsByUserId(user_id: number) {
+    const access = await this.usersRepository.findOneNoCheck(
+      { id: user_id },
+      {
+        accesses: {
+          endpoints: true,
+        },
       },
     );
 

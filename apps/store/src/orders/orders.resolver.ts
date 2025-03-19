@@ -12,7 +12,8 @@ import { UseGuards } from '@nestjs/common';
 import {
   CacheControl,
   CurrentUser,
-  JwtAuthAccessGuard,
+  JwtAccessGuard,
+  JwtAuthGuard,
   PaginateGraph,
   PaginateQueryGraph,
 } from '@app/common';
@@ -27,7 +28,7 @@ export class OrdersResolver {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Mutation(() => GetOrderDto, { name: 'createOrder' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async create(
     @CurrentUser() user: User,
     @Args('createOrderDto') createOrderDto: CreateOrderDto,
@@ -36,7 +37,7 @@ export class OrdersResolver {
   }
 
   @Query(() => ListOrderDto, { name: 'orders' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   @CacheControl({ maxAge: 100, scope: 'PRIVATE' })
   async findAll(
     @Args() _: PaginateQueryGraph,
@@ -47,14 +48,14 @@ export class OrdersResolver {
   }
 
   @Query(() => GetOrderDto, { name: 'order' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   @CacheControl({ maxAge: 100, scope: 'PRIVATE' })
   async findOne(@CurrentUser() user: User, @Args('id') id: string) {
     return this.ordersService.findOne({ id: +id }, user);
   }
 
   @Mutation(() => GetOrderDto, { name: 'updateOrder' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async update(
     @CurrentUser() user: User,
     @Args('id') id: string,
@@ -64,19 +65,19 @@ export class OrdersResolver {
   }
 
   @Mutation(() => GetOrderDto, { name: 'deleteOrder' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async remove(@CurrentUser() user: User, @Args('id') id: string) {
     return this.ordersService.remove({ id: +id }, user);
   }
 
   @Mutation(() => GetOrderDto, { name: 'clearOrderItems' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async clearOrderItems(@CurrentUser() user: User, @Args('id') id: string) {
     return this.ordersService.clearItems({ id: +id }, user);
   }
 
   @Mutation(() => GetOrderDto, { name: 'cancelOrder' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async cancelOrder(@CurrentUser() user: User, @Args('id') id: string) {
     return this.ordersService.cancelOrder({ id: +id }, user);
   }

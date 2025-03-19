@@ -8,7 +8,8 @@ import {
 } from '@nestjs/graphql';
 import {
   CacheControl,
-  JwtAuthAccessGuard,
+  JwtAccessGuard,
+  JwtAuthGuard,
   PaginateGraph,
   PaginateQueryGraph,
 } from '@app/common';
@@ -25,7 +26,7 @@ export class CategoriesResolver {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Mutation(() => GetCategoryDto, { name: 'createCategory' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async create(
     @Args('createCategoryDto') createCategoryDto: CreateCategoryDto,
   ) {
@@ -48,7 +49,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => GetCategoryDto, { name: 'updateCategory' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async update(
     @Args('id') id: string,
     @Args('updateCategoryDto') updateCategoryDto: UpdateCategoryDto,
@@ -57,7 +58,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => GetCategoryDto, { name: 'deleteCategory' })
-  @UseGuards(JwtAuthAccessGuard)
+  @UseGuards(JwtAuthGuard, JwtAccessGuard)
   async remove(@Args('id') id: string) {
     return this.categoriesService.remove({ id: +id });
   }
