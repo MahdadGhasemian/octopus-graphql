@@ -1,6 +1,6 @@
 # Octopus GraphQL
 
-![Octopus](.images/octopus.png)
+![Octopus](.images/octopus-graphql.png)
 
 ## Did you know?
 
@@ -8,9 +8,7 @@ An **octopus** has three hearts! One heart circulates blood around the body, whi
 
 ## About
 
-**Octopus** is a scalable microservices template built with **NestJS**, **RabbitMQ**, **PostgreSQL**, and **Redis**. It provides an efficient and developer-friendly foundation for building distributed systems, supporting both Docker and Kubernetes deployments. The system now leverages **Minio** for object storage, offering a reliable and scalable solution for handling files across services.
-
-## GragphQL:
+**Octopus GraphQL** is a scalable microservices template built with **NestJS**, **GraphQL**, **RabbitMQ**, **PostgreSQL**, and **Redis**. It provides an efficient and developer-friendly foundation for building distributed systems, supporting both Docker and Kubernetes deployments. The system now leverages **Minio** for object storage, offering a reliable and scalable solution for handling files across services.
 
 ## Getting Started
 
