@@ -20,6 +20,100 @@ pnpm i
 docker-compose up --build # For the first add the --build
 ```
 
+## Services
+
+### Auth
+
+![User Access GraphQL](.images/user-access-graphql.png)
+
+- Support dynamic access (role)
+- Support auto Caching
+
+### Storage
+
+![Resize And Change Quality of Image](.images/routes-download-resize-quality.png)
+
+- Based on MinIO (S3 Object Storage)
+- Support multiple file formats:
+  - Images: jpg, jpeg, png, bmp, tiff, gif, webp
+  - Documents: doc, docx, xlsx, pdf, txt, rtf
+  - Media: mp3, wav, mp4, avi, avi, mkv
+  - Compressed: zip, rar, tar, 7z, gz
+- Support public and private files
+- Support resizing and changing the quality of images on download routes
+- Support caching on the download routes
+- Unique route to upload all files
+- Unique route to download all files (if the file is an image type, the system will automatically consider caching and editing utitlies for the file)
+
+### Store
+
+![Store Product List](.images/store-product-list-graphql.png)
+
+- Support fully Pagination
+- Support auto Caching
+
+## Postman GraphQL API
+
+You can access the API collection in our [Postman Public Workspace](https://www.postman.com/dark-crescent-229322/octopus-graphql/overview).
+
+## Graphql Playgrounds
+
+- Auth Service: [http://localhost:3000/graphql/](http://localhost:3000/graphql/)
+- Store Service: [http://localhost:3001/graphql/](http://localhost:3001/graphql/)
+- Storage Service: [http://localhost:3002/graphql/](http://localhost:3002/graphql/)
+
+## Migration
+
+There is possible to generate and run migration files on different branches separetly (developing, stage, production)
+
+1. Create environment files - .env.migration.developing - .env.migration.stage - .env.migration.production
+   example:
+
+```
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5436
+POSTGRES_USERNAME=postgres
+POSTGRES_PASSWORD=randompassword
+# POSTGRES_SYNCHRONIZE=true
+POSTGRES_SYNCHRONIZE=false
+POSTGRES_AUTO_LOAD_ENTITIES=true
+```
+
+2. Edit the 'POSTGRES_ENTITIES' parameter inside the package.json file according to your entities
+3. Generate and run the migratinos
+
+```bash
+# Developing
+pnpm run migration:generate:developing
+pnpm run migration:run:developing
+
+# Stage
+pnpm run migration:generate:stage
+pnpm run migration:run:stage
+
+# Production
+pnpm run migration:generate:production
+pnpm run migration:run:production
+```
+
+## Cache Manager
+
+1. Only GET endpoints are cached.
+2. Use `@NoCache()` decorator to bypass the caching system for specific endpoints.
+3. Use `@GeneralCache()` decorator to cache the endpoint without including the user's token in the cache key.
+4. Services caching status:
+
+| Service Name | Module     | Cache Status | Decorator       | Note                                 |
+| ------------ | ---------- | ------------ | --------------- | ------------------------------------ |
+| Auth         | auth       | not cached   | @NoCache()      |                                      |
+| Auth         | users      | cached       |                 | are cached according to user's token |
+| Auth         | accesses   | cached       |                 | are cached according to user's token |
+| Store        | categories | cached       | @GeneralCache() |                                      |
+| Store        | products   | cached       | @GeneralCache() |                                      |
+| Store        | orders     | not cached   | @NoCache()      |                                      |
+| Store        | payments   | not cached   | @NoCache()      |                                      |
+| Storage      |            | not cached   |                 |                                      |
+
 ## Web UI Tools
 
 Note: The following ports **(8087, 15679 and 5549)** are defined in the `docker-compose` file.
@@ -78,100 +172,6 @@ password: randompassword
 ```bash
 mcli alias set octopus-graphql http://localhost:9100 admin randompassword
 ```
-
-## Services
-
-### Auth
-
-![User Access GraphQL](.images/user-access-graphql.png)
-
-- Support dynamic access (role)
-- Support auto Caching
-
-### Storage
-
-![Resize And Change Quality of Image](.images/routes-download-resize-quality.png)
-
-- Based on MinIO (S3 Object Storage)
-- Support multiple file formats:
-  - Images: jpg, jpeg, png, bmp, tiff, gif, webp
-  - Documents: doc, docx, xlsx, pdf, txt, rtf
-  - Media: mp3, wav, mp4, avi, avi, mkv
-  - Compressed: zip, rar, tar, 7z, gz
-- Support public and private files
-- Support resizing and changing the quality of images on download routes
-- Support caching on the download routes
-- Unique route to upload all files
-- Unique route to download all files (if the file is an image type, the system will automatically consider caching and editing utitlies for the file)
-
-### Store
-
-![Store Product List](.images/store-product-list-graphql.png)
-
-- Support fully Pagination
-- Support auto Caching
-
-## Swaggers
-
-- Auth Service: [http://localhost:3000/docs#/](http://localhost:3000/docs#/)
-- Store Service: [http://localhost:3001/docs#/](http://localhost:3001/docs#/)
-- Storage Service: [http://localhost:3002/docs#/](http://localhost:3002/docs#/)
-
-## Postman GraphQL API
-
-You can access the API collection in our [Postman Public Workspace](https://www.postman.com/dark-crescent-229322/octopus-graphql/overview).
-
-## Migration
-
-There is possible to generate and run migration files on different branches separetly (developing, stage, production)
-
-1. Create environment files - .env.migration.developing - .env.migration.stage - .env.migration.production
-   example:
-
-```
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5436
-POSTGRES_USERNAME=postgres
-POSTGRES_PASSWORD=randompassword
-# POSTGRES_SYNCHRONIZE=true
-POSTGRES_SYNCHRONIZE=false
-POSTGRES_AUTO_LOAD_ENTITIES=true
-```
-
-2. Edit the 'POSTGRES_ENTITIES' parameter inside the package.json file according to your entities
-3. Generate and run the migratinos
-
-```bash
-# Developing
-pnpm run migration:generate:developing
-pnpm run migration:run:developing
-
-# Stage
-pnpm run migration:generate:stage
-pnpm run migration:run:stage
-
-# Production
-pnpm run migration:generate:production
-pnpm run migration:run:production
-```
-
-## Cache Manager
-
-1. Only GET endpoints are cached.
-2. Use `@NoCache()` decorator to bypass the caching system for specific endpoints.
-3. Use `@GeneralCache()` decorator to cache the endpoint without including the user's token in the cache key.
-4. Services caching status:
-
-| Service Name | Module     | Cache Status | Decorator       | Note                                 |
-| ------------ | ---------- | ------------ | --------------- | ------------------------------------ |
-| Auth         | auth       | not cached   | @NoCache()      |                                      |
-| Auth         | users      | cached       |                 | are cached according to user's token |
-| Auth         | accesses   | cached       |                 | are cached according to user's token |
-| Store        | categories | cached       | @GeneralCache() |                                      |
-| Store        | products   | cached       | @GeneralCache() |                                      |
-| Store        | orders     | not cached   | @NoCache()      |                                      |
-| Store        | payments   | not cached   | @NoCache()      |                                      |
-| Storage      |            | not cached   |                 |                                      |
 
 ## 🧪 Run Tests
 
