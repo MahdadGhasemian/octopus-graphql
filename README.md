@@ -1,6 +1,6 @@
 # Octopus GraphQL
 
-![Octopus](.images/octopus-graphql-2.png)
+![Octopus](.images/octopus-graphql-3.png)
 
 ## Did you know?
 
