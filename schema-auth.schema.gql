@@ -32,8 +32,8 @@ input CreateAccessDto {
 }
 
 input CreateEndpointAccessDto {
-  method: String!
-  path: String!
+  operation_name: String!
+  operation_type: String!
   tag: String
 }
 
@@ -68,8 +68,8 @@ type GetAccessDto {
 type GetEndpointDto {
   created_at: DateTime!
   id: Int!
-  method: String!
-  path: String!
+  operation_name: String!
+  operation_type: String!
   tag: String!
   updated_at: DateTime!
 }
