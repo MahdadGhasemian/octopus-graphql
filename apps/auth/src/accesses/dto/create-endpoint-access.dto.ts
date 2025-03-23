@@ -10,9 +10,9 @@ export class CreateEndpointAccessDto {
 
   @IsString()
   @Field(() => String)
-  path: string;
+  operation_type: string;
 
   @IsString()
   @Field(() => String)
-  method: string;
+  operation_name: string;
 }

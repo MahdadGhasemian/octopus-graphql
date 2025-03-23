@@ -8,8 +8,8 @@ export class GetEndpointDto extends AbstractGetDto {
   tag?: string;
 
   @Field()
-  path: string;
+  operation_type: string;
 
   @Field()
-  method: string;
+  operation_name: string;
 }

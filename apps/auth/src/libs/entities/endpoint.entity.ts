@@ -7,8 +7,10 @@ export class Endpoint extends AbstractEntity<Endpoint> {
   tag?: string;
 
   @Column()
-  path: string;
+  // method: string;
+  operation_type: string;
 
   @Column()
-  method: string;
+  // path: string;
+  operation_name: string;
 }
