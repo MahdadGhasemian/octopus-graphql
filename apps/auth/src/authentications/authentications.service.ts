@@ -244,11 +244,7 @@ export class AuthenticationsService {
   }
 
   private async unauthenticate(response: Response): Promise<string> {
-    // response.cookie('Authentication', null);
-    response.cookie('Authentication', '', {
-      httpOnly: true,
-      expires: new Date(),
-    });
+    response.cookie('Authentication', null);
 
     return null;
   }
