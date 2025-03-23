@@ -68,6 +68,20 @@ export class GetCategoryDto extends AbstractGetDto {
 
 ![Nested Relations](.images/nested-relations.gif)
 
+## Pagination
+
+This project includes a custom wrapper for the `nestjs-paginate` package, providing a seamless and efficient `pagination` experience for `GraphQL` queries. The wrapper ensures structured and optimized pagination, making it easy to navigate through large datasets.
+
+```ts
+@Query(() => ListProductDto, { name: 'products' })
+  @CacheControl({ maxAge: 100 })
+  findAll(@Args() _: PaginateQueryGraph, @PaginateGraph() { query, config }) {
+    return this.productsService.findAll(query, config);
+  }
+```
+
+![Nested Relations](.images/nested-relations.gif)
+
 ## Services
 
 ### Auth
@@ -230,8 +244,8 @@ pnpm run test:e2e
 ## TODO
 
 - [x] REST To Graphql
-- [ ] Document
-  - [ ] Githab Readme
+- [x] Document
+  - [x] Githab Readme
   - [x] Postman Graphql
   - [x] Auto generated swagger (only for storage download api)
 - [x] Validations and Transforms
@@ -247,6 +261,10 @@ Contributions are welcome!
 This project is licensed under the MIT License.
 
 ## Change log
+
+### 0.0.3 (2025-03-23)
+
+- Completed the README file.
 
 ### 0.0.2 (2025-03-18)
 
