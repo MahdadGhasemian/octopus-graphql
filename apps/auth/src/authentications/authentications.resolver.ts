@@ -2,7 +2,12 @@ import { UseGuards } from '@nestjs/common';
 import { AuthenticationsService } from './authentications.service';
 import { GetOtpDto } from './dto/get-otp.dto';
 import { ConfirmOtpDto } from './dto/confirm-otp.dto';
-import { CacheControl, CurrentUser, JwtAuthGuard } from '@app/common';
+import {
+  CacheControl,
+  CurrentUser,
+  JwtAuthGuard,
+  LocalAuthGuard,
+} from '@app/common';
 import { LoginDto } from './dto/login.dto';
 import { GetUserDto } from '../users/dto/get-user.dto';
 import { EditInfoDto } from './dto/edit-info.dto';
@@ -49,10 +54,11 @@ export class AuthenticationsResolver {
   }
 
   @Mutation(() => GetUserDto, { name: 'login' })
-  async login(@Args('loginDto') loginDto: LoginDto, @Context() context: any) {
-    const { res } = context;
+  @UseGuards(LocalAuthGuard)
+  async login(@Args('loginDto') _loginDto: LoginDto, @Context() context: any) {
+    const { req, res } = context;
 
-    return this.authenticationsService.login(loginDto, res);
+    return this.authenticationsService.login(req.user, res);
   }
 
   @Mutation(() => GetUserDto, { name: 'logout', nullable: true })

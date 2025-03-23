@@ -9,8 +9,7 @@ import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersRepository } from '../users/users.repository';
-import { LocalStrategy } from '../libs/strategies/local.strategy';
-import { JwtStrategy } from '@app/common';
+import { JwtStrategy, LocalStrategy } from '@app/common';
 
 @Module({
   imports: [
@@ -35,7 +34,12 @@ import { JwtStrategy } from '@app/common';
     UsersModule,
   ],
   providers: [
-    LocalStrategy,
+    {
+      provide: LocalStrategy,
+      useFactory: (authenticationsService: AuthenticationsService) =>
+        new LocalStrategy(authenticationsService),
+      inject: [AuthenticationsService],
+    },
     {
       provide: JwtStrategy,
       useFactory: (configService: ConfigService, usersService: UsersService) =>

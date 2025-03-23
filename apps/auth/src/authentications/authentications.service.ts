@@ -6,7 +6,6 @@ import { AuthCommon, TokenPayload } from '@app/common';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dto/login.dto';
 import { EditInfoDto } from './dto/edit-info.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
@@ -109,6 +108,8 @@ export class AuthenticationsService {
 
     await this.authenticate(user, response);
 
+    delete user.hashed_password;
+
     return user;
   }
 
@@ -156,24 +157,15 @@ export class AuthenticationsService {
 
     await this.authenticate(user, response);
 
+    delete user.hashed_password;
+
     return user;
   }
 
-  async login(loginDto: LoginDto, response: Response) {
-    const user = await this.usersService.findOneNoCheck({
-      email: loginDto.email,
-    });
-
-    const isEqual = await AuthCommon.compareHash(
-      user.hashed_password,
-      loginDto.password,
-    );
-
-    if (!isEqual) {
-      throw new UnauthorizedException('Credentials are not valid');
-    }
-
+  async login(user: User, response: Response) {
     await this.authenticate(user, response);
+
+    delete user.hashed_password;
 
     return user;
   }
@@ -183,7 +175,7 @@ export class AuthenticationsService {
   }
 
   async verifyUser(email: string, password: string) {
-    const user = await this.usersService.findOne({ email });
+    const user = await this.usersService.findOneNoCheck({ email });
 
     const isEqual = await AuthCommon.compareHash(
       user.hashed_password,
@@ -193,6 +185,8 @@ export class AuthenticationsService {
     if (!isEqual) {
       throw new UnauthorizedException('Credentials are not valid');
     }
+
+    delete user.hashed_password;
 
     return user;
   }
@@ -244,11 +238,7 @@ export class AuthenticationsService {
   }
 
   private async unauthenticate(response: Response): Promise<string> {
-    // response.cookie('Authentication', null);
-    response.cookie('Authentication', '', {
-      httpOnly: true,
-      expires: new Date(),
-    });
+    response.cookie('Authentication', null);
 
     return null;
   }
