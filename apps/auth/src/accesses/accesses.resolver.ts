@@ -63,7 +63,6 @@ export class AccessesResolver {
     return this.accessesService.remove({ id: +id });
   }
 
-  @CacheControl({ inheritMaxAge: true })
   @ResolveField(() => [GetEndpointDto], { name: 'endpoints', nullable: true })
   async endpoints(@Parent() access: GetAccessDto) {
     return this.accessesService.getEndpointsByAccessId(access.id);

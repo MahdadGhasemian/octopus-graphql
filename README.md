@@ -98,21 +98,12 @@ pnpm run migration:run:production
 
 ## Cache Manager
 
-1. Only GET endpoints are cached.
-2. Use `@NoCache()` decorator to bypass the caching system for specific endpoints.
-3. Use `@GeneralCache()` decorator to cache the endpoint without including the user's token in the cache key.
-4. Services caching status:
+1. Use the `@CacheControl({ inheritMaxAge: true })` decorator for `@ObjectType()` classes.
+2. Use the `@CacheControl({ maxAge: 100 })` decorator for `resolvers` you want to cache ( adjust the `maxAge` value according to your needs).
+3. Use the `@CacheControl({ maxAge: 100, scope: 'PRIVATE' })` decorator for resolvers you want to cache only for `logged-in users`.
+4. This is an enhanced, fully automatic cached manager. Requests will be fully cached based on their query details.
 
-| Service Name | Module     | Cache Status | Decorator       | Note                                 |
-| ------------ | ---------- | ------------ | --------------- | ------------------------------------ |
-| Auth         | auth       | not cached   | @NoCache()      |                                      |
-| Auth         | users      | cached       |                 | are cached according to user's token |
-| Auth         | accesses   | cached       |                 | are cached according to user's token |
-| Store        | categories | cached       | @GeneralCache() |                                      |
-| Store        | products   | cached       | @GeneralCache() |                                      |
-| Store        | orders     | not cached   | @NoCache()      |                                      |
-| Store        | payments   | not cached   | @NoCache()      |                                      |
-| Storage      |            | not cached   |                 |                                      |
+![Cache Manager](.images/octopus-graphql-caching.gif)
 
 ## Web UI Tools
 
