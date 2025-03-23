@@ -20,6 +20,54 @@ pnpm i
 docker-compose up --build # For the first add the --build
 ```
 
+## Cache Manager
+
+1. Use the `@CacheControl({ inheritMaxAge: true })` decorator for `@ObjectType()` classes.
+2. Use the `@CacheControl({ maxAge: 100 })` decorator for `resolvers` you want to cache ( adjust the `maxAge` value according to your needs).
+3. Use the `@CacheControl({ maxAge: 100, scope: 'PRIVATE' })` decorator for resolvers you want to cache only for `logged-in users`.
+4. This is an enhanced, fully automatic cached manager. Requests will be fully cached based on their query details.
+
+![Cache Manager](.images/octopus-graphql-caching.gif)
+
+## Nested Relations
+
+This project leverages the `@ResolveField` decorator, along with proper relationships defenied in the `@ObjectType()` classes, to handle fully nested relations.
+This makes it easy to retrieve related related entities for a given object.
+
+```ts
+@ResolveField(() => GetCategoryDto, { name: 'category', nullable: true })
+async category(@Parent() product: GetProductDto) {
+  return this.categoriesService.findOne({ id: product.category_id });
+}
+```
+
+```ts
+@ObjectType()
+export class GetProductDto extends AbstractGetDto {
+  // ...
+
+  @Field()
+  category_id?: number;
+
+  @Field(() => GetCategoryDto, { nullable: true })
+  category?: GetCategoryDto;
+
+  // ...
+}
+```
+
+```ts
+@ObjectType()
+export class GetCategoryDto extends AbstractGetDto {
+  // ...
+
+  @Field(() => [GetProductDto], { nullable: true })
+  products?: GetProductDto[];
+}
+```
+
+![Nested Relations](.images/nested-relations.gif)
+
 ## Services
 
 ### Auth
@@ -95,15 +143,6 @@ pnpm run migration:run:stage
 pnpm run migration:generate:production
 pnpm run migration:run:production
 ```
-
-## Cache Manager
-
-1. Use the `@CacheControl({ inheritMaxAge: true })` decorator for `@ObjectType()` classes.
-2. Use the `@CacheControl({ maxAge: 100 })` decorator for `resolvers` you want to cache ( adjust the `maxAge` value according to your needs).
-3. Use the `@CacheControl({ maxAge: 100, scope: 'PRIVATE' })` decorator for resolvers you want to cache only for `logged-in users`.
-4. This is an enhanced, fully automatic cached manager. Requests will be fully cached based on their query details.
-
-![Cache Manager](.images/octopus-graphql-caching.gif)
 
 ## Web UI Tools
 
