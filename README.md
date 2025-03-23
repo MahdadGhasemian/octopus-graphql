@@ -27,7 +27,7 @@ docker-compose up --build # For the first add the --build
 3. Use the `@CacheControl({ maxAge: 100, scope: 'PRIVATE' })` decorator for resolvers you want to cache only for `logged-in users`.
 4. This is an enhanced, fully automatic cached manager. Requests will be fully cached based on their query details.
 
-![Cache Manager](.images/octopus-graphql-caching.gif)
+![Cache Manager](.images/cache-images/octopus-graphql-caching.gif)
 
 ## Nested Relations
 
@@ -66,7 +66,7 @@ export class GetCategoryDto extends AbstractGetDto {
 }
 ```
 
-![Nested Relations](.images/nested-relations.gif)
+![Nested Relations](.images/nested-relations-images/nested-relations.gif)
 
 ## Pagination
 
@@ -80,7 +80,13 @@ This project includes a custom wrapper for the `nestjs-paginate` package, provid
   }
 ```
 
-![Nested Relations](.images/nested-relations.gif)
+![Pagination](.images/pagination-images/pagination.png)
+
+## Dynamic Authentication & Role-Based Access
+
+The authentication service supports dynamic roles and automatic caching, ensuring a seamless experience for users while maintaining security.
+
+![Roles](.images/dynamic-role-based/roles.png)
 
 ## Services
 
